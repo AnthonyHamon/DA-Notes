@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Note } from '../interfaces/note.interface';
 import { NoteListService } from '../firebase-services/note-list.service'
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-note-list',
@@ -8,12 +9,34 @@ import { NoteListService } from '../firebase-services/note-list.service'
   styleUrls: ['./note-list.component.scss']
 })
 export class NoteListComponent {
-  noteList: Note[] = [];
+  noteList:Note[] = [];
   favFilter: "all" | "fav" = "all";
   status: "notes" | "trash" = "notes";
 
-  constructor(public noteService: NoteListService) {
-    this.noteList = this.getDummyData()
+  constructor(private noteService: NoteListService) {
+  }
+
+  // getList(): Note[]{
+  //   return this.noteService.normalNotes;
+  // }
+
+  // getList(): Note[]{
+  //   if (this.status == "notes"){
+  //     return this.noteService.normalNotes;
+  //   }else if(this.status == "trash"){
+  //     return this.noteService.trashNotes;
+  //   }
+  // }
+
+  getList(): Note[]{
+    if (this.status == "notes"){
+      if (this.favFilter == "all"){
+        return this.noteService.normalNotes;
+      }else {
+        return this.noteService.normalMarkedNotes;
+      }
+    }else 
+    return this.noteService.trashNotes;
   }
 
   changeFavFilter(filter: "all" | "fav") {
